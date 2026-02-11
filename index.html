@@ -1,38 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quà Valentine</title>
+
 <style>
 body {
+    font-family: Arial, sans-serif;
     text-align: center;
-    font-family: Arial;
-    background: linear-gradient(45deg,#ff4e50,#fc913a);
+    background: linear-gradient(135deg, #ff4e50, #fc913a);
     color: white;
     padding-top: 100px;
 }
+
 input {
     padding: 10px;
     font-size: 16px;
+    border-radius: 8px;
+    border: none;
 }
+
 button {
     padding: 10px 20px;
     font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    color: #ff4e50;
     cursor: pointer;
+    margin-left: 5px;
 }
+
 #result {
-    margin-top: 20px;
+    margin-top: 30px;
     font-size: 22px;
     font-weight: bold;
 }
-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-}
 </style>
 </head>
+
 <body>
 
 <h1>🎁 Mở Quà Valentine 🎁</h1>
@@ -41,7 +48,6 @@ canvas {
 <button onclick="checkName()">Mở quà</button>
 
 <div id="result"></div>
-<canvas id="firework"></canvas>
 
 <script>
 let usedNames = JSON.parse(localStorage.getItem("usedNames")) || [];
@@ -60,45 +66,28 @@ function checkName() {
         return;
     }
 
+    // Hiệu ứng đang random
     let count = 0;
     result.innerHTML = "🎲 Đang random...";
+
     let loading = setInterval(() => {
         count++;
         result.innerHTML = "🎲 Đang random" + ".".repeat(count % 4);
-    }, 200);
+    }, 300);
 
     setTimeout(() => {
         clearInterval(loading);
 
         if (name === "lam") {
-            result.innerHTML = "🎉 CHÚC MỪNG LAM ĐÃ TRÚNG QUÀ! 🎁";
-            startFirework();
+            result.innerHTML = "🎉 Chúc mừng LAM đã trúng quà! 🎉";
         } else {
-            result.innerHTML = "😢 Chúc bạn may mắn lần sau!";
+            result.innerHTML = "😢 Rất tiếc, bạn không trúng!";
         }
 
         usedNames.push(name);
         localStorage.setItem("usedNames", JSON.stringify(usedNames));
 
-    }, 3000);
-}
-
-let canvas = document.getElementById("firework");
-let ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-function startFirework() {
-    for (let i = 0; i < 100; i++) {
-        setTimeout(() => {
-            ctx.fillStyle = "hsl(" + Math.random()*360 + ",100%,50%)";
-            ctx.beginPath();
-            ctx.arc(Math.random()*canvas.width,
-                    Math.random()*canvas.height,
-                    5,0,2*Math.PI);
-            ctx.fill();
-        }, i * 30);
-    }
+    }, 2500);
 }
 </script>
 
