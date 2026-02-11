@@ -1,2 +1,70 @@
-# Event
-Quà valentine 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mở Quà May Mắn</title>
+    <style>
+        body {
+            background: #ffe6f0;
+            text-align: center;
+            font-family: Arial;
+            padding-top: 100px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 8px;
+            background: hotpink;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: deeppink;
+        }
+
+        #result {
+            margin-top: 30px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎁 Nhập tên để mở quà 🎁</h1>
+
+    <input type="text" id="nameInput" placeholder="Nhập tên của bạn">
+    <button onclick="checkWinner()">Mở Quà</button>
+
+    <div id="result"></div>
+
+    <script>
+        function checkWinner() {
+            let name = document.getElementById("nameInput").value.trim().toLowerCase();
+            let result = document.getElementById("result");
+
+            if (name === "") {
+                result.innerHTML = "⚠️ Vui lòng nhập tên!";
+                return;
+            }
+
+            if (name === "lam") {
+                result.innerHTML = "🎉 Chúc mừng " + name + " đã trúng phần quà duy nhất! 🎁🔥";
+            } else {
+                result.innerHTML = "😢 Rất tiếc, bạn không phải người may mắn!";
+            }
+        }
+    </script>
+
+</body>
+</html>
