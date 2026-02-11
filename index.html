@@ -10,6 +10,7 @@ body {
     background: linear-gradient(45deg, #ff4e50, #fc913a);
     color: white;
     margin-top: 100px;
+    overflow: hidden;
 }
 
 input {
@@ -62,7 +63,7 @@ function check() {
 
     if (name === "lam") {
         result.innerHTML = "🎉 CHÚC MỪNG! Bạn đã trúng quà 🎁";
-        startFireworks();
+        launchFireworks();
     } else {
         result.innerHTML = "❌ Rất tiếc, bạn không trúng.";
     }
@@ -75,35 +76,35 @@ canvas.height = window.innerHeight;
 
 let particles = [];
 
-function startFireworks() {
-    for (let i = 0; i < 100; i++) {
+function launchFireworks() {
+    for (let i = 0; i < 150; i++) {
         particles.push({
-            x: canvas.width / 2,
-            y: canvas.height / 2,
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height / 2,
             radius: Math.random() * 3 + 2,
             color: "hsl(" + Math.random() * 360 + ",100%,50%)",
-            speedX: (Math.random() - 0.5) * 10,
-            speedY: (Math.random() - 0.5) * 10
+            speedX: (Math.random() - 0.5) * 8,
+            speedY: (Math.random() - 0.5) * 8,
+            life: 100
         });
     }
 }
 
 function animate() {
     requestAnimationFrame(animate);
-    ctx.fillStyle = "rgba(0,0,0,0.1)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     particles.forEach((p, index) => {
         p.x += p.speedX;
         p.y += p.speedY;
-        p.radius *= 0.96;
+        p.life--;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.fill();
 
-        if (p.radius < 0.5) {
+        if (p.life <= 0) {
             particles.splice(index, 1);
         }
     });
