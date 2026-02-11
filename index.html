@@ -1,117 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Quà Valentine</title>
-<style>
-body {
-    text-align: center;
-    font-family: Arial;
-    background: linear-gradient(45deg, #ff4e50, #fc913a);
-    color: white;
-    margin-top: 100px;
-    overflow: hidden;
-}
-
-input {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: none;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    background: white;
-    color: #ff4e50;
-    font-weight: bold;
-}
-
-#result {
-    margin-top: 20px;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-}
-</style>
-</head>
-<body>
-
-<h1>🎁 Mở Quà Valentine 🎁</h1>
-
-<input type="text" id="name" placeholder="Nhập tên của bạn">
-<button onclick="check()">Mở Quà</button>
-
-<div id="result"></div>
-
-<canvas id="fireworks"></canvas>
-
 <script>
-function check() {
-    let name = document.getElementById("name").value.toLowerCase().trim();
+  let usedNames = JSON.parse(localStorage.getItem("usedNames")) || [];
+
+  function checkName() {
+    let name = document.getElementById("nameInput").value.trim().toLowerCase();
     let result = document.getElementById("result");
 
-    if (name === "lam") {
-        result.innerHTML = "🎉 CHÚC MỪNG! Bạn đã trúng quà 🎁";
-        launchFireworks();
-    } else {
-        result.innerHTML = "❌ Rất tiếc, bạn không trúng.";
+    if (name === "") {
+      result.innerHTML = "⚠️ Vui lòng nhập tên!";
+      return;
     }
-}
 
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    if (usedNames.includes(name)) {
+      result.innerHTML = "❌ Tên này đã mở quà rồi!";
+      return;
+    }
 
-let particles = [];
+    // Hiệu ứng đang random
+    let count = 0;
+    result.innerHTML = "🎲 Đang random.";
+    
+    let loading = setInterval(() => {
+      count++;
+      result.innerHTML = "🎲 Đang random" + ".".repeat(count % 4);
+    }, 300);
 
-function launchFireworks() {
-    for (let i = 0; i < 150; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height / 2,
-            radius: Math.random() * 3 + 2,
-            color: "hsl(" + Math.random() * 360 + ",100%,50%)",
-            speedX: (Math.random() - 0.5) * 8,
-            speedY: (Math.random() - 0.5) * 8,
-            life: 100
+    // Sau 3 giây mới ra kết quả
+    setTimeout(() => {
+      clearInterval(loading);
+
+      usedNames.push(name);
+      localStorage.setItem("usedNames", JSON.stringify(usedNames));
+
+      if (name === "lam") {
+        result.innerHTML = "🎉 CHÚC MỪNG! Bạn đã trúng quà 🎁💖";
+
+        confetti({
+          particleCount: 200,
+          spread: 120,
+          origin: { y: 0.6 }
         });
-    }
-}
 
-function animate() {
-    requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+      } else {
+        result.innerHTML = "😢 Rất tiếc, bạn không trúng!";
+      }
 
-    particles.forEach((p, index) => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.life--;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-
-        if (p.life <= 0) {
-            particles.splice(index, 1);
-        }
-    });
-}
-
-animate();
+    }, 3000);
+  }
 </script>
-
-</body>
-</html>
