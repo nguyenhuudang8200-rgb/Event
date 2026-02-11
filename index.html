@@ -1,49 +1,106 @@
-<script>
-  let usedNames = JSON.parse(localStorage.getItem("usedNames")) || [];
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quà Valentine</title>
+<style>
+body {
+    text-align: center;
+    font-family: Arial;
+    background: linear-gradient(45deg,#ff4e50,#fc913a);
+    color: white;
+    padding-top: 100px;
+}
+input {
+    padding: 10px;
+    font-size: 16px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+#result {
+    margin-top: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+</style>
+</head>
+<body>
 
-  function checkName() {
+<h1>🎁 Mở Quà Valentine 🎁</h1>
+
+<input type="text" id="nameInput" placeholder="Nhập tên của bạn">
+<button onclick="checkName()">Mở quà</button>
+
+<div id="result"></div>
+<canvas id="firework"></canvas>
+
+<script>
+let usedNames = JSON.parse(localStorage.getItem("usedNames")) || [];
+
+function checkName() {
     let name = document.getElementById("nameInput").value.trim().toLowerCase();
     let result = document.getElementById("result");
 
     if (name === "") {
-      result.innerHTML = "⚠️ Vui lòng nhập tên!";
-      return;
+        result.innerHTML = "⚠ Vui lòng nhập tên!";
+        return;
     }
 
     if (usedNames.includes(name)) {
-      result.innerHTML = "❌ Tên này đã mở quà rồi!";
-      return;
+        result.innerHTML = "❌ Tên này đã nhập rồi!";
+        return;
     }
 
-    // Hiệu ứng đang random
     let count = 0;
-    result.innerHTML = "🎲 Đang random.";
-    
+    result.innerHTML = "🎲 Đang random...";
     let loading = setInterval(() => {
-      count++;
-      result.innerHTML = "🎲 Đang random" + ".".repeat(count % 4);
-    }, 300);
+        count++;
+        result.innerHTML = "🎲 Đang random" + ".".repeat(count % 4);
+    }, 200);
 
-    // Sau 3 giây mới ra kết quả
     setTimeout(() => {
-      clearInterval(loading);
+        clearInterval(loading);
 
-      usedNames.push(name);
-      localStorage.setItem("usedNames", JSON.stringify(usedNames));
+        if (name === "lam") {
+            result.innerHTML = "🎉 CHÚC MỪNG LAM ĐÃ TRÚNG QUÀ! 🎁";
+            startFirework();
+        } else {
+            result.innerHTML = "😢 Chúc bạn may mắn lần sau!";
+        }
 
-      if (name === "lam") {
-        result.innerHTML = "🎉 CHÚC MỪNG! Bạn đã trúng quà 🎁💖";
-
-        confetti({
-          particleCount: 200,
-          spread: 120,
-          origin: { y: 0.6 }
-        });
-
-      } else {
-        result.innerHTML = "😢 Rất tiếc, bạn không trúng!";
-      }
+        usedNames.push(name);
+        localStorage.setItem("usedNames", JSON.stringify(usedNames));
 
     }, 3000);
-  }
+}
+
+let canvas = document.getElementById("firework");
+let ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function startFirework() {
+    for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+            ctx.fillStyle = "hsl(" + Math.random()*360 + ",100%,50%)";
+            ctx.beginPath();
+            ctx.arc(Math.random()*canvas.width,
+                    Math.random()*canvas.height,
+                    5,0,2*Math.PI);
+            ctx.fill();
+        }, i * 30);
+    }
+}
 </script>
+
+</body>
+</html>
