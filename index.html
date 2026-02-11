@@ -1,70 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mở Quà May Mắn</title>
-    <style>
-        body {
-            background: #ffe6f0;
-            text-align: center;
-            font-family: Arial;
-            padding-top: 100px;
-        }
+<meta charset="UTF-8">
+<title>Quà Valentine</title>
+<style>
+body {
+    text-align: center;
+    font-family: Arial;
+    background: linear-gradient(45deg, #ff4e50, #fc913a);
+    color: white;
+    margin-top: 100px;
+}
 
-        input {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
+input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+}
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-left: 10px;
-            border: none;
-            border-radius: 8px;
-            background: hotpink;
-            color: white;
-            cursor: pointer;
-        }
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: white;
+    color: #ff4e50;
+    font-weight: bold;
+}
 
-        button:hover {
-            background: deeppink;
-        }
+#result {
+    margin-top: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
 
-        #result {
-            margin-top: 30px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-    </style>
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+</style>
 </head>
 <body>
 
-    <h1>🎁 Nhập tên để mở quà 🎁</h1>
+<h1>🎁 Mở Quà Valentine 🎁</h1>
 
-    <input type="text" id="nameInput" placeholder="Nhập tên của bạn">
-    <button onclick="checkWinner()">Mở Quà</button>
+<input type="text" id="name" placeholder="Nhập tên của bạn">
+<button onclick="check()">Mở Quà</button>
 
-    <div id="result"></div>
+<div id="result"></div>
 
-    <script>
-        function checkWinner() {
-            let name = document.getElementById("nameInput").value.trim().toLowerCase();
-            let result = document.getElementById("result");
+<canvas id="fireworks"></canvas>
 
-            if (name === "") {
-                result.innerHTML = "⚠️ Vui lòng nhập tên!";
-                return;
-            }
+<script>
+function check() {
+    let name = document.getElementById("name").value.toLowerCase().trim();
+    let result = document.getElementById("result");
 
-            if (name === "lam") {
-                result.innerHTML = "🎉 Chúc mừng " + name + " đã trúng phần quà duy nhất! 🎁🔥";
-            } else {
-                result.innerHTML = "😢 Rất tiếc, bạn không phải người may mắn!";
-            }
+    if (name === "lam") {
+        result.innerHTML = "🎉 CHÚC MỪNG! Bạn đã trúng quà 🎁";
+        startFireworks();
+    } else {
+        result.innerHTML = "❌ Rất tiếc, bạn không trúng.";
+    }
+}
+
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function startFireworks() {
+    for (let i = 0; i < 100; i++) {
+        particles.push({
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: Math.random() * 3 + 2,
+            color: "hsl(" + Math.random() * 360 + ",100%,50%)",
+            speedX: (Math.random() - 0.5) * 10,
+            speedY: (Math.random() - 0.5) * 10
+        });
+    }
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    ctx.fillStyle = "rgba(0,0,0,0.1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((p, index) => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.radius *= 0.96;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        if (p.radius < 0.5) {
+            particles.splice(index, 1);
         }
-    </script>
+    });
+}
+
+animate();
+</script>
 
 </body>
 </html>
